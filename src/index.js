@@ -5,11 +5,13 @@ const port = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
     res.json({
-        mensaje: '¡Aplicación desplegada con Dokploy!',
+        mensaje: '¡Actualización automática con Dokploy!',
+        version: '2.0.0',
         institucion: 'Universidad del Quindío',
         programa: 'Ingeniería de Sistemas y Computación',
         curso: 'Administración de Infraestructura de TI',
         plataforma: 'Dokploy PaaS',
+        deploy: 'Git Push to Deploy',
         fecha: new Date().toISOString()
     });
 });
@@ -17,8 +19,9 @@ app.get('/', (req, res) => {
 app.get('/health', (req, res) => {
     res.status(200).json({
         estado: 'saludable',
+        version: '2.0.0',
         uptime: process.uptime(),
-        version: process.version,
+        node_version: process.version,
         plataforma: 'Dokploy'
     });
 });
@@ -55,16 +58,26 @@ app.get('/db', async (req, res) => {
             connectTimeout: 5000
         });
 
-        const [filas] = await conexion.query('SELECT DATABASE() AS base, VERSION() AS version, NOW() AS ahora');
+        const [filas] = await conexion.query(
+            'SELECT DATABASE() AS base, VERSION() AS version, NOW() AS ahora'
+        );
+
         await conexion.end();
 
-        res.json({ estado: 'conectado', motor: 'MySQL', ...filas[0] });
+        res.json({
+            estado: 'conectado',
+            motor: 'MySQL',
+            ...filas[0]
+        });
     } catch (error) {
-        res.status(500).json({ estado: 'error', detalle: error.message });
+        res.status(500).json({
+            estado: 'error',
+            detalle: error.message
+        });
     }
 });
 
 app.listen(port, '0.0.0.0', () => {
-    console.log(`Servidor corriendo en puerto ${port}`);
-    console.log(`Plataforma: Dokploy PaaS`);
+    console.log(`Servidor v2.0.0 corriendo en puerto ${port}`);
+    console.log('Plataforma: Dokploy PaaS');
 });
