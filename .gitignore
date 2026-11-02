@@ -1,4 +1,10 @@
 node_modules/
 npm-debug.log*
-.env.local
 *.log
+
+# Variables de entorno reales (usar .env.example como plantilla)
+.env
+
+# Copias y archivos temporales
+*.bak
+.DS_Store
